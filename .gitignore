@@ -1,0 +1,41 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# OS-specific files
+.DS_Store          # macOS
+Thumbs.db          # Windows
+
+# IDE and editor files
+.vscode/           # VSCode settings
+.idea/             # JetBrains settings
+*.sublime-workspace # Sublime Text workspace
+
+# Build output
+/dist/
+build/
+
+# npm package lock files (optional, you can choose to include it if you want to lock versions)
+package-lock.json
+yarn.lock
+
+# Debugger configurations
+*.vscode/
+
+# MongoDB data files (if applicable)
+*.mongodb
+
+# Temporary files
+*.swp  # Vim swap files
+
+# Coverage directory (for testing)
+coverage/
+
+# Misc
+*.bak
+*.tmp
