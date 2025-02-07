@@ -8,6 +8,7 @@ const createSatsangForm = async (req, res) => {
             formdata.satsangDate = new Date(formdata.satsangDate);
         }
 
+        formdata.submitted=true;
         const satsangForm = await SatsangForm.create(formdata);
         return res.status(201).json({
             success: true,
@@ -41,6 +42,7 @@ const getSatsangForms = async (req, res) => {
         if (startDate) {
             query.satsangDate = { $gte: new Date(startDate) }; // Filter by date if provided
         }
+      
 
         const forms = await SatsangForm.find(query).sort({ satsangDate: -1 });
 
@@ -56,6 +58,39 @@ const getSatsangForms = async (req, res) => {
         });
     }
 };
+
+const submittedSatsangGhar = async (req,res)=>{
+    try{
+       const {submitted, startDate} = req.query;
+       if(!Date ){
+           return res.status(400).json({success:false, message:"Please provide date status"});
+
+       }
+       const startDateobj = new Date(startDate);
     
 
-module.exports = { createSatsangForm, getSatsangForms };
+       const satsangforms= await SatsangForm.find({submitted:true, satsangDate:{$gte:startDateobj}});
+       
+       const satsangGhar = satsangforms.map(form=>form.satsangPlace);
+       console.log(satsangGhar);
+       
+
+       return res.status(200).json({
+           success:true,
+           count:satsangGhar.length,
+           data:satsangGhar
+    });
+    }
+    catch(error){
+      console.error(error);
+      return res.status(500).json({
+          success:false,
+          message:error.message || "Internal server error"
+    });
+
+}
+};
+    
+
+module.exports = { createSatsangForm, getSatsangForms,submittedSatsangGhar };
+

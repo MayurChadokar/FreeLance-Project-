@@ -5,7 +5,7 @@ const satsangDetailsSchema = new mongoose.Schema({
     satsangKarta: {
       type: String,
       trim: true,
-      // Required only if typeofSatsang is "Satsang Karta"
+
       required: function() {
         return this.typeofSatsang === "Satsang Karta";
       }
@@ -13,7 +13,7 @@ const satsangDetailsSchema = new mongoose.Schema({
     satsangReader: {
       type: String,
       trim: true,
-      // Required only if typeofSatsang is "Satsang Reader"
+     
       required: function() {
         return this.typeofSatsang === "Satsang Reader";
       }
@@ -21,7 +21,7 @@ const satsangDetailsSchema = new mongoose.Schema({
     pathi: {
       type: String,
       trim: true,
-      // Required only if typeofSatsang is either "Satsang Karta" or "Satsang Reader"
+      
       required: function() {
         return ["Satsang Karta", "Satsang Reader"].includes(this.typeofSatsang);
       }
@@ -105,6 +105,10 @@ const satsangDetailsSchema = new mongoose.Schema({
       required: true,
       min: 0
     },
+    submitted:{
+      type: Boolean,
+      default: false
+    },
     typeofSatsang: {
       type: String,
       required: true,
@@ -116,21 +120,22 @@ const satsangDetailsSchema = new mongoose.Schema({
         "Video CD"
       ],
       trim: true
+    
     },
-    // Nested schema for conditional fields based on typeofSatsang
+    
     satsangDetails: satsangDetailsSchema
   }, {
     timestamps: true
   });
-  
-  // Middleware to validate totalsangat
+
+
   satsangFormSchema.pre('save', function(next) {
-    // Verify totalsangat equals sangatmale + sangatfemale
+   
     if (this.totalsangat !== (this.sangatmale + this.sangatfemale)) {
       throw new Error('Total sangat must equal sum of male and female sangat');
     }
+  
     
-    // Verify totalsangatMaleFemaleChildren equals totalsangat + children
     if (this.totalsangatMaleFemaleChildren !== (this.totalsangat + this.children)) {
       throw new Error('Total sangat with children must equal sum of total sangat and children');
     }

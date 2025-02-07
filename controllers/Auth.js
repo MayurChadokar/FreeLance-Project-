@@ -63,7 +63,9 @@ const loginUser = async (req, res) => {
       
       name: user.name,
       grNumber: user.grNumber,
+     
     };
+  console.log(payload);
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
 
@@ -82,6 +84,7 @@ const loginUser = async (req, res) => {
     });
   }
 };
+
 
 
 
