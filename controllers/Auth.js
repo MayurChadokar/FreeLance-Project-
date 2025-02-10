@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please enter all fields' });
     }
 
-    const user = await User.findOne({ grNumber });
+    let user = await User.findOne({ grNumber });
     if (!user) {
       return res.status(400).json({ success: false, message: 'User does not exist' });
     }
@@ -60,21 +60,26 @@ const loginUser = async (req, res) => {
     }
 
     const payload = {
-      
+      id: user._id,
       name: user.name,
       grNumber: user.grNumber,
      
     };
   console.log(payload);
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
+    let token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    console.log(token);
 
+    user.token=token;
+
+    console.log(user.token);
     return res.status(200).json({
       success: true,
       message: 'User logged in successfully',
       token,
       user: payload,
     });
+    
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -84,6 +89,7 @@ const loginUser = async (req, res) => {
     });
   }
 };
+
 
 
 

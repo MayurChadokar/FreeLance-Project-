@@ -5,9 +5,9 @@ const { createSatsangForm, getSatsangForms,submittedSatsangGhar } = require('../
 const protect = require('../middlewares/protect');
 
 
-router.post('/form', createSatsangForm);
-router.get('/satsangGhar', protect,  getSatsangForms);
-router.get('/status', protect, submittedSatsangGhar);
+router.post('/form',createSatsangForm);
+router.get('/satsangGhar',protect,  getSatsangForms);
+router.get('/status',protect,submittedSatsangGhar);
 
 
 module.exports = router;
