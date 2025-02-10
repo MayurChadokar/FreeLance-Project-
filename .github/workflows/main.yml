@@ -17,16 +17,12 @@ jobs:
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
         
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Build Docker image
+        run: docker build -t mayurchadokar/backend-project:latest .
+        working-directory: ./backend  # Adjust this if your Dockerfile is in a different location
         
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: mayurchadokar/backend-project:latest
+      - name: Push to Docker Hub
+        run: docker push mayurchadokar/backend-project:latest
           
       - name: Stop existing container
         run: |
@@ -34,7 +30,7 @@ jobs:
           docker rm backend-project-container || true
         continue-on-error: true
 
-      - name: Deploy to EC2
+      - name: Run container
         run: |
           docker pull mayurchadokar/backend-project:latest
           docker run -d \
@@ -42,6 +38,6 @@ jobs:
             -p 3000:3000 \
             mayurchadokar/backend-project:latest
 
-      - name: Clean up old images
+      - name: Clean up
         run: docker image prune -f
         continue-on-error: true
