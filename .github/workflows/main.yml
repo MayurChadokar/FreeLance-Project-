@@ -3,39 +3,45 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main  # Runs on push to the main branch
+      - main
 
 jobs:
-  build: 
+  deploy:
     runs-on: self-hosted
-    steps: 
-      - name: Checkout source
-        uses: actions/checkout@v3 
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build Docker image
-        run: docker build -t mayurchadokar/backend-project .
-
-      - name: Push Docker image 
-        run: docker push mayurchadokar/backend-project:latest
-
-  deploy: 
-    needs: build 
-    runs-on: aws-ec2  # Ensure this matches your EC2 runner label
-
-    steps: 
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Pull image from Docker Hub 
-        run: docker pull mayurchadokar/backend-project:latest
-
-      - name: Stop and remove old container (if running)
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: mayurchadokar/backend-project:latest
+          
+      - name: Stop existing container
         run: |
           docker stop backend-project-container || true
           docker rm backend-project-container || true
+        continue-on-error: true
 
-      - name: Run Docker container
-        run: docker run -d -p 3000:3000 --name backend-project-container mayurchadokar/backend-project:latest
+      - name: Deploy to EC2
+        run: |
+          docker pull mayurchadokar/backend-project:latest
+          docker run -d \
+            --name backend-project-container \
+            -p 3000:3000 \
+            mayurchadokar/backend-project:latest
+
+      - name: Clean up old images
+        run: docker image prune -f
+        continue-on-error: true
