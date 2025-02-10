@@ -10,16 +10,16 @@ jobs:
     runs-on: self-hosted
     steps: 
       - name: Checkout source
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v2
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t mayurchadokar/backend-project.
+        run: docker buildx build --push -t mayurchadokar/myapp:latest.
 
       - name: Push Docker image 
-        run: docker push mayurchadokar/backend-project:latest
+        run: docker push mayurchadokar/myapp:latest
 
   deploy: 
     needs: build 
@@ -30,12 +30,12 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Pull image from Docker Hub 
-        run: docker pull mayurchadokar/backend-project:latest
+        run: docker pull mayurchadokar/myapp:latest
 
       - name: Stop and remove old container (if running)
         run: |
-          docker stop backend-project-container || true
-          docker rm backend-project-container || true
+          docker stop myapp-container || true
+          docker rm myapp-project-container || true
 
       - name: Run Docker container
-        run: docker run -d -p 3000:3000 --name backend-project-container mayurchadokar/backend-project:latest
+        run: docker run -d -p 3000:3000 --name myapp-container mayurchadokar/myapp:latest
