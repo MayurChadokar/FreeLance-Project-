@@ -16,10 +16,10 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/backend .
+        run: docker build -t mayurchadokar/backend .
 
       - name: Push Docker image 
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+        run: docker push mayurchadokar/backend:latest
 
   deploy: 
     needs: build 
@@ -30,7 +30,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Pull image from Docker Hub 
-        run: docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
+        run: docker pull mayurchadokar/backend:latest
 
       - name: Stop and remove old container (if running)
         run: |
@@ -38,4 +38,4 @@ jobs:
           docker rm backend-container || true
 
       - name: Run Docker container
-        run: docker run -d -p 3000:3000 --name backend-container ${{ secrets.DOCKER_USERNAME }}/backend:latest
+        run: docker run -d -p 3000:3000 --name backend-container mayurchadokar/backend:latest
