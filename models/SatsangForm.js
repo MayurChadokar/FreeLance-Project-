@@ -39,6 +39,12 @@ const satsangDetailsSchema = new mongoose.Schema({
       required: true,
       trim: true
     },
+    satsangDay:{
+         type:String,
+         required:true,
+         enum: ["Sunday","Thursday"],
+          trim:true 
+    },
     satsangDate: {
       type: Date,
       required: true
@@ -47,9 +53,9 @@ const satsangDetailsSchema = new mongoose.Schema({
       type: String,
       required: true,
       enum: [
-        "Bagdi", "Banderi", "Barjar", "Bhimfaliya", "Bhulgaon", "Bidwal",
+        "Bagdi", "Banderi", "Barjar", "Bhimfaliya", "Bhulgaon", "Bidwal","Bakhatpura",
         "Dhamnod", "Dhar", "Indrapur", "Kanwan", "Kathiwada", "Khadki",
-        "Khedi", "Kherwas", "Meghnagar", "Nagda", "Pipliya", "Piprideb",
+        "Khedi", "Kherwas", "Karwad","Meghnagar", "Nagda", "Pipliya", "Piprideb",
         "Pithampur", "Rajgarh", "Sakad", "Sandla", "Sendhwa", "Upari",
         "Wadlipada"
       ],
@@ -90,6 +96,10 @@ const satsangDetailsSchema = new mongoose.Schema({
       required: true,
       min: 0
     },
+    cycle:{
+      type:Number,
+      required:true,
+    },
     other: {
       type: Number,
       required: true,
@@ -109,6 +119,7 @@ const satsangDetailsSchema = new mongoose.Schema({
       type: Boolean,
       default: false
     },
+
     typeofSatsang: {
       type: String,
       required: true,
@@ -139,8 +150,8 @@ const satsangDetailsSchema = new mongoose.Schema({
     if (this.totalsangatMaleFemaleChildren !== (this.totalsangat + this.children)) {
       throw new Error('Total sangat with children must equal sum of total sangat and children');
     }
-    
-    next();
+
+   next();
   })
   
  module.exports = mongoose.model("SatsangForm", satsangFormSchema);
