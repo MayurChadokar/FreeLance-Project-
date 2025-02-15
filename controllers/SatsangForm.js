@@ -63,7 +63,7 @@ const createSatsangForm = async (req, res) => {
 };
 const getSatsangForms = async (req, res) => {
     try {
-        const { startDate, satsangPlace, satsangDay } = req.query; // Extract query parameters
+        const { startDate, satsangPlace, satsangDay, typeofSatsang } = req.query; // Extract query parameters
 
         let query = {}; // Initialize query object
 
@@ -74,7 +74,7 @@ const getSatsangForms = async (req, res) => {
          if(satsangDay){
             query.satsangDay = satsangDay; // Filter by satsangDay if provided
          }
-        if (typeofSatsang) {
+        if(typeofSatsang) {
             query.typeofSatsang = typeofSatsang; // Filter by typeofSatsang if provided
         }
 
